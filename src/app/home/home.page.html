@@ -1,0 +1,200 @@
+<!-- POPUP SELAMAT DATANG -->
+<div *ngIf="showPopup" class="popup-overlay" (click)="hidePopup()">
+  <div class="popup-container" (click)="$event.stopPropagation()">
+    <div class="popup-content">
+      <div class="popup-icon">🍽️</div>
+      <div class="popup-title">Selamat Datang!</div>
+      
+      <div class="popup-message">
+        <p>Nikmati kemudahan merencanakan menu harian Anda.</p>
+        <p>Mulai tambahkan menu favorit Anda sekarang!</p>
+      </div>
+      
+      <div class="popup-close" (click)="hidePopup()">
+        <span>Mulai</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Meal Planning</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div style="padding: 20px 16px 0 16px;">
+    <h1 style="font-size: 16px; font-weight: 600; cursor: pointer;" (click)="openMonthPicker()">
+      {{ currentMonth }} {{ currentYear }}
+      <ion-icon name="chevron-down-outline" style="font-size: 14px;"></ion-icon>
+    </h1>
+
+    <div style="height: 16px;"></div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <ion-icon name="chevron-back-outline" style="font-size: 28px; cursor: pointer; color: #9B2E2E;" (click)="prevDay()"></ion-icon>
+      
+      <span style="font-size: 16px; font-weight: 600; color: #9B2E2E;">
+        {{ getFormattedDate() }}
+      </span>
+      
+      <ion-icon name="chevron-forward-outline" style="font-size: 28px; cursor: pointer; color: #9B2E2E;" (click)="nextDay()"></ion-icon>
+    </div>
+
+    <div style="height: 24px;"></div>
+  </div>
+
+  <!-- KALENDER -->
+  <div style="padding: 0 16px 20px 16px;">
+    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center;">
+      <div *ngFor="let day of weekDaysShort; let i = index" 
+           style="cursor: pointer;" (click)="selectDayByIndex(i)">
+        <div style="font-size: 12px; color: #8e8e93; margin-bottom: 8px; font-weight: 500;">{{ day.name }}</div>
+        <div style="font-size: 20px; font-weight: 600;"
+             [style.color]="isSelectedDay(i) ? '#9B2E2E' : '#1c1c1e'"
+             [style.borderBottom]="isSelectedDay(i) ? '3px solid #9B2E2E' : 'none'"
+             [style.paddingBottom]="isSelectedDay(i) ? '4px' : '0'">
+          {{ day.date }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU MAKANAN -->
+  <div style="padding: 0 16px;">
+    
+    <!-- SARAPAN -->
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 12px 0; border-bottom: 2px solid #f0f0f0;">
+        <span style="font-size: 24px;">🍳</span>
+        <span style="flex: 1; font-size: 16px; font-weight: 600;">Sarapan</span>
+        <ion-button fill="clear" size="small" (click)="tambahMenu('Breakfast')">
+          <ion-icon name="add-circle-outline" style="font-size: 24px; color: #9B2E2E;"></ion-icon>
+        </ion-button>
+      </div>
+      <div *ngFor="let menu of getMenusByKategori('Breakfast')" 
+           style="display: flex; justify-content: space-between; align-items: center; padding: 12px; margin: 8px 0; background: #FFFFFF; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;"
+           (click)="lihatDetailMenu(menu)">
+        <div>
+          <div style="font-size: 15px; font-weight: 600;">{{ menu.nama }}</div>
+          <div style="font-size: 12px; color: #8e8e93;">📝 {{ menu.catatan }}</div>
+        </div>
+        <ion-badge [color]="menu.sudahDimasak ? 'success' : 'warning'" (click)="$event.stopPropagation(); toggleMasak(menu.id)" style="cursor: pointer;">
+          {{ menu.sudahDimasak ? '✓ Sudah' : '○ Belum' }}
+        </ion-badge>
+      </div>
+    </div>
+
+    <!-- MAKAN SIANG -->
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 12px 0; border-bottom: 2px solid #f0f0f0;">
+        <span style="font-size: 24px;">🍲</span>
+        <span style="flex: 1; font-size: 16px; font-weight: 600;">Makan Siang</span>
+        <ion-button fill="clear" size="small" (click)="tambahMenu('Lunch')">
+          <ion-icon name="add-circle-outline" style="font-size: 24px; color: #9B2E2E;"></ion-icon>
+        </ion-button>
+      </div>
+      <div *ngFor="let menu of getMenusByKategori('Lunch')" 
+           style="display: flex; justify-content: space-between; align-items: center; padding: 12px; margin: 8px 0; background: #FFFFFF; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;"
+           (click)="lihatDetailMenu(menu)">
+        <div>
+          <div style="font-size: 15px; font-weight: 600;">{{ menu.nama }}</div>
+          <div style="font-size: 12px; color: #8e8e93;">📝 {{ menu.catatan }}</div>
+        </div>
+        <ion-badge [color]="menu.sudahDimasak ? 'success' : 'warning'" (click)="$event.stopPropagation(); toggleMasak(menu.id)" style="cursor: pointer;">
+          {{ menu.sudahDimasak ? '✓ Sudah' : '○ Belum' }}
+        </ion-badge>
+      </div>
+    </div>
+
+    <!-- MAKAN MALAM -->
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 12px 0; border-bottom: 2px solid #f0f0f0;">
+        <span style="font-size: 24px;">🍽️</span>
+        <span style="flex: 1; font-size: 16px; font-weight: 600;">Makan Malam</span>
+        <ion-button fill="clear" size="small" (click)="tambahMenu('Dinner')">
+          <ion-icon name="add-circle-outline" style="font-size: 24px; color: #9B2E2E;"></ion-icon>
+        </ion-button>
+      </div>
+      <div *ngFor="let menu of getMenusByKategori('Dinner')" 
+           style="display: flex; justify-content: space-between; align-items: center; padding: 12px; margin: 8px 0; background: #FFFFFF; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;"
+           (click)="lihatDetailMenu(menu)">
+        <div>
+          <div style="font-size: 15px; font-weight: 600;">{{ menu.nama }}</div>
+          <div style="font-size: 12px; color: #8e8e93;">📝 {{ menu.catatan }}</div>
+        </div>
+        <ion-badge [color]="menu.sudahDimasak ? 'success' : 'warning'" (click)="$event.stopPropagation(); toggleMasak(menu.id)" style="cursor: pointer;">
+          {{ menu.sudahDimasak ? '✓ Sudah' : '○ Belum' }}
+        </ion-badge>
+      </div>
+    </div>
+
+    <!-- CEMILAN -->
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 12px 0; border-bottom: 2px solid #f0f0f0;">
+        <span style="font-size: 24px;">🍪</span>
+        <span style="flex: 1; font-size: 16px; font-weight: 600;">Cemilan</span>
+        <ion-button fill="clear" size="small" (click)="tambahMenu('Snack')">
+          <ion-icon name="add-circle-outline" style="font-size: 24px; color: #9B2E2E;"></ion-icon>
+        </ion-button>
+      </div>
+      <div *ngFor="let menu of getMenusByKategori('Snack')" 
+           style="display: flex; justify-content: space-between; align-items: center; padding: 12px; margin: 8px 0; background: #FFFFFF; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;"
+           (click)="lihatDetailMenu(menu)">
+        <div>
+          <div style="font-size: 15px; font-weight: 600;">{{ menu.nama }}</div>
+          <div style="font-size: 12px; color: #8e8e93;">📝 {{ menu.catatan }}</div>
+        </div>
+        <ion-badge [color]="menu.sudahDimasak ? 'success' : 'warning'" (click)="$event.stopPropagation(); toggleMasak(menu.id)" style="cursor: pointer;">
+          {{ menu.sudahDimasak ? '✓ Sudah' : '○ Belum' }}
+        </ion-badge>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL PILIH BULAN -->
+  <div *ngIf="showMonthPicker" class="modal-overlay" (click)="closeMonthPicker()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span>Pilih Bulan & Tahun</span>
+        <ion-icon name="close-outline" (click)="closeMonthPicker()" style="font-size: 24px; cursor: pointer;"></ion-icon>
+      </div>
+      <div class="modal-body">
+        <div class="year-selector">
+          <ion-icon name="chevron-back-outline" (click)="selectYear(currentYear-1)"></ion-icon>
+          <span class="year-text">{{ currentYear }}</span>
+          <ion-icon name="chevron-forward-outline" (click)="selectYear(currentYear+1)"></ion-icon>
+        </div>
+        <div class="months-grid">
+          <div *ngFor="let month of months; let i = index"
+               class="month-item"
+               [class.active]="i === currentMonthIndex"
+               (click)="selectMonth(i)">
+            {{ month }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<!-- TAB BAR -->
+<ion-tab-bar slot="bottom">
+  <ion-tab-button tab="home" routerLink="/home" routerLinkActive="tab-active" routerDirection="root">
+    <ion-icon name="home-outline"></ion-icon>
+    <ion-label>Beranda</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button class="center-button" (click)="tambahMenuCepat()">
+    <ion-icon name="add-circle" class="center-icon"></ion-icon>
+  </ion-tab-button>
+
+  <ion-tab-button tab="daftar-menu" routerLink="/daftar-menu" routerLinkActive="tab-active" routerDirection="root">
+    <ion-icon name="list-outline"></ion-icon>
+    <ion-label>Daftar Menu</ion-label>
+  </ion-tab-button>
+</ion-tab-bar>

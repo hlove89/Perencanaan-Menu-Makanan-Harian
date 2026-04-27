@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ isEdit ? 'Edit Menu' : 'Tambah Menu' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Tutup</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="stacked">Nama Makanan</ion-label>
+    <ion-input [(ngModel)]="namaMenu" placeholder="Contoh: Nasi Goreng"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Tanggal</ion-label>
+    <div style="position: relative; width: 100%;">
+      <ion-input [value]="selectedTanggal" placeholder="Pilih tanggal" readonly (click)="openCalendar()" style="padding-right: 30px;"></ion-input>
+      <ion-icon name="chevron-down-outline" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #9B2E2E; pointer-events: none;"></ion-icon>
+    </div>
+  </ion-item>
+
+  <ion-item *ngIf="showKategoriPicker">
+    <ion-label position="stacked">Kategori</ion-label>
+    <ion-select [(ngModel)]="selectedKategori" placeholder="Pilih kategori">
+      <ion-select-option value="Breakfast">🍳 Sarapan</ion-select-option>
+      <ion-select-option value="Lunch">🍲 Makan Siang</ion-select-option>
+      <ion-select-option value="Dinner">🍽️ Makan Malam</ion-select-option>
+      <ion-select-option value="Snack">🍪 Cemilan</ion-select-option>
+    </ion-select>
+  </ion-item>
+  
+  <ion-item>
+    <ion-label position="stacked">Catatan</ion-label>
+    <ion-textarea [(ngModel)]="catatan" placeholder="Bumbu, bahan, tips..." rows="3"></ion-textarea>
+  </ion-item>    
+
+  <ion-button expand="block" (click)="simpan()" [disabled]="!namaMenu" class="ion-margin-top">
+    <ion-icon name="save-outline" slot="start"></ion-icon>
+    Simpan Menu
+  </ion-button>
+</ion-content>
+
+<div *ngIf="showCalendar" class="calendar-modal-overlay" (click)="closeCalendar()">
+  <div class="calendar-modal-container" (click)="$event.stopPropagation()">
+    <div class="calendar-modal-header">
+      <span>Pilih Tanggal</span>
+      <ion-icon name="close-outline" (click)="closeCalendar()" style="font-size: 24px; cursor: pointer;"></ion-icon>
+    </div>
+    <div class="calendar-modal-body">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <ion-icon name="chevron-back-outline" style="font-size: 24px; cursor: pointer;" (click)="prevMonth()"></ion-icon>
+        <span style="font-weight: 600;">{{ calendarMonth }} {{ calendarYear }}</span>
+        <ion-icon name="chevron-forward-outline" style="font-size: 24px; cursor: pointer;" (click)="nextMonth()"></ion-icon>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-bottom: 8px;">
+        <div style="font-size: 12px; color: #8e8e93;">MIN</div>
+        <div style="font-size: 12px; color: #8e8e93;">SEN</div>
+        <div style="font-size: 12px; color: #8e8e93;">SEL</div>
+        <div style="font-size: 12px; color: #8e8e93;">RAB</div>
+        <div style="font-size: 12px; color: #8e8e93;">KAM</div>
+        <div style="font-size: 12px; color: #8e8e93;">JUM</div>
+        <div style="font-size: 12px; color: #8e8e93;">SAB</div>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center;">
+        <div *ngFor="let day of calendarDays; let i = index"
+             style="padding: 8px 4px; border-radius: 8px; cursor: pointer;"
+             [style.background]="day.isSelected ? '#9B2E2E' : (day.isToday ? '#f0f0f0' : 'transparent')"
+             [style.color]="day.isSelected ? 'white' : '#1c1c1e'"
+             [style.fontWeight]="day.isSelected ? '600' : 'normal'"
+             (click)="selectDate(day)">
+          {{ day.date }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

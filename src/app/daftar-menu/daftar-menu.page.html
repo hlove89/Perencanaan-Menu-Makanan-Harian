@@ -1,0 +1,139 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Daftar Menu</ion-title>
+    <ion-buttons slot="end">
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div style="padding: 20px 16px 0 16px;">
+    <h1 style="font-size: 16px; font-weight: 600; cursor: pointer;" (click)="openMonthPicker()">
+      {{ currentMonth }} {{ currentYear }}
+      <ion-icon name="chevron-down-outline" style="font-size: 14px;"></ion-icon>
+    </h1>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+      <ion-icon name="chevron-back-outline" style="font-size: 28px; cursor: pointer; color: #9B2E2E;" (click)="prevDay()"></ion-icon>
+      
+      <span style="font-size: 16px; font-weight: 600; color: #9B2E2E;">
+        {{ selectedFullDate }}
+      </span>
+      
+      <ion-icon name="chevron-forward-outline" style="font-size: 28px; cursor: pointer; color: #9B2E2E;" (click)="nextDay()"></ion-icon>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-bottom: 8px; padding: 0 16px;">
+    <div style="font-size: 12px; color: #8E8E93;">MIN</div>
+    <div style="font-size: 12px; color: #8E8E93;">SEN</div>
+    <div style="font-size: 12px; color: #8E8E93;">SEL</div>
+    <div style="font-size: 12px; color: #8E8E93;">RAB</div>
+    <div style="font-size: 12px; color: #8E8E93;">KAM</div>
+    <div style="font-size: 12px; color: #8E8E93;">JUM</div>
+    <div style="font-size: 12px; color: #8E8E93;">SAB</div>
+  </div>
+  
+  <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; padding: 0 16px;">
+    <div *ngFor="let day of calendarDays; let i = index"
+         style="padding: 8px 4px; border-radius: 8px; cursor: pointer;"
+         [style.background]="day.isSelected ? '#9B2E2E' : (day.isToday ? '#f0f0f0' : 'transparent')"
+         [style.color]="day.isSelected ? 'white' : '#1C1C1E'"
+         [style.fontWeight]="day.isSelected ? '600' : 'normal'"
+         (click)="selectDate(day)">
+      {{ day.date }}
+    </div>
+  </div>
+
+  <div style="padding: 12px;">
+    <div *ngFor="let menu of filteredMenus" style="background: white; margin-bottom: 12px; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="flex: 1;">
+          <h2 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">{{ menu.nama }}</h2>
+          <p style="margin: 0 0 4px 0; font-size: 12px; color: #8E8E93;">
+            <ion-icon name="time-outline" size="small"></ion-icon>
+            {{ getKategoriLabel(menu.kategori) }}
+          </p>
+          <p style="margin: 0; font-size: 12px; color: #8E8E93;">
+            <ion-icon name="create-outline" size="small"></ion-icon>
+            {{ menu.catatan }}
+          </p>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <ion-chip [color]="menu.sudahDimasak ? 'success' : 'warning'" (click)="toggleMasak(menu.id)" style="cursor: pointer;">
+            <ion-icon [name]="menu.sudahDimasak ? 'checkmark' : 'time-outline'"></ion-icon>
+            <ion-label>{{ menu.sudahDimasak ? 'Sudah' : 'Belum' }}</ion-label>
+          </ion-chip>
+          
+          <ion-button fill="clear" size="small" (click)="editMenu(menu)">
+            <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+          
+          <ion-button fill="clear" size="small" color="danger" (click)="hapusMenu(menu.id)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="filteredMenus.length === 0" class="empty-state">
+    <ion-icon name="calendar-outline"></ion-icon>
+    <h3>Belum ada menu</h3>
+    <p>Tekan tombol + untuk menambah menu</p>
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="tambahMenu()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<div *ngIf="showMonthPicker" class="modal-overlay" (click)="closeMonthPicker()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <span>Pilih Bulan & Tahun</span>
+      <ion-icon name="close-outline" (click)="closeMonthPicker()" style="font-size: 24px; cursor: pointer;"></ion-icon>
+    </div>
+    <div class="modal-body">
+      <div class="year-selector">
+        <ion-icon name="chevron-back-outline" (click)="changeYear(-1)"></ion-icon>
+        <span class="year-text">{{ tempYear }}</span>
+        <ion-icon name="chevron-forward-outline" (click)="changeYear(1)"></ion-icon>
+      </div>
+      <div class="months-grid">
+        <div *ngFor="let month of months; let i = index"
+             class="month-item"
+             [class.active]="i === tempMonth"
+             (click)="selectMonthTemp(i)">
+          {{ month }}
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <ion-button expand="block" fill="outline" (click)="closeMonthPicker()" style="flex: 1;">Batal</ion-button>
+        <ion-button expand="block" (click)="applyMonthYear()" style="flex: 1; --background: #9B2E2E;">OK</ion-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ion-tab-bar slot="bottom">
+  <ion-tab-button tab="home" routerLink="/home" routerLinkActive="tab-active" routerDirection="root">
+    <ion-icon name="home-outline"></ion-icon>
+    <ion-label>Home</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button class="center-button" (click)="tambahMenuCepat()">
+    <ion-icon name="add-circle" class="center-icon"></ion-icon>
+  </ion-tab-button>
+
+  <ion-tab-button tab="daftar-menu" routerLink="/daftar-menu" routerLinkActive="tab-active" routerDirection="root">
+    <ion-icon name="list-outline"></ion-icon>
+    <ion-label>Menu</ion-label>
+  </ion-tab-button>
+</ion-tab-bar>

@@ -1,0 +1,68 @@
+:root {
+  --ion-background-color: #FDF8F0;
+  --ion-background-color-rgb: 253,248,240;
+  
+  --ion-text-color: #1C1C1E;
+  --ion-text-color-rgb: 28,28,30;
+  
+  --ion-color-primary: #9B2E2E;
+  --ion-color-primary-rgb: 155,46,46;
+  --ion-color-primary-contrast: #FFFFFF;
+  --ion-color-primary-contrast-rgb: 255,255,255;
+  --ion-color-primary-shade: #882828;
+  --ion-color-primary-tint: #A54343;
+  
+  --ion-color-success: #2DD36F;
+  --ion-color-success-rgb: 45,211,111;
+  --ion-color-success-contrast: #FFFFFF;
+  
+  --ion-color-warning: #FFC409;
+  --ion-color-warning-rgb: 255,196,9;
+  --ion-color-warning-contrast: #1C1C1E;
+  
+  --ion-color-medium: #8E8E93;
+  --ion-color-medium-rgb: 142,142,147;
+  --ion-color-medium-contrast: #FFFFFF;
+}
+
+ion-content {
+  --background: #FDF8F0 !important;
+  background: #FDF8F0 !important;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #E5E5EA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9B2E2E;
+  border-radius: 4px;
+}
+
+ion-title {
+  color: #9B2E2E !important;
+}
+
+ion-title ion-icon {
+  color: #9B2E2E !important;
+}
+
+ion-toolbar {
+  --border-width: 0 !important;
+  --min-height: 56px;
+  border-bottom: none !important;
+}
+
+ion-header::after {
+  display: none !important;
+}
+
+ion-header ion-toolbar {
+  --border-style: none;
+  border: none;
+}
