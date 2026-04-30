@@ -19,6 +19,10 @@ const routes: Routes = [
     path: 'menu-form',
     loadChildren: () => import('./menu-form/menu-form.module').then( m => m.MenuFormPageModule)
   },
+  {
+  path: 'settings',
+  loadChildren: () => import('./settings/settings.module').then(m => m.SettingsPageModule)
+  }
 ];
 
 @NgModule({

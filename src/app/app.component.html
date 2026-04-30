@@ -1,4 +1,10 @@
 <ion-app>
+
+  <!-- Custom Splash Full Screen -->
+  <div class="custom-splash" *ngIf="showCustomSplash">
+    <img src="assets/resources/splash.png" alt="Splash Screen" />
+  </div>
+
   <ion-router-outlet id="main-content"></ion-router-outlet>
   
   <ion-tab-bar slot="bottom">
@@ -7,13 +13,15 @@
       <ion-label>Beranda</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button class="center-button" (click)="openAddMenuModal()">
-      <ion-icon name="add-circle" class="center-icon"></ion-icon>
-    </ion-tab-button>
-
     <ion-tab-button tab="daftar-menu" routerLink="/daftar-menu" routerLinkActive="tab-active" routerDirection="root">
       <ion-icon name="list-outline"></ion-icon>
-      <ion-label>Daftar Menu</ion-label>
+      <ion-label>Menu</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="settings" routerLink="/settings" routerLinkActive="tab-active" routerDirection="root">
+      <ion-icon name="settings-outline"></ion-icon>
+      <ion-label>Pengaturan</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
+
 </ion-app>

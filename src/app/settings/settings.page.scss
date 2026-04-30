@@ -1,0 +1,105 @@
+ion-content {
+  --background: #FDF8F0;
+  --padding-bottom: 80px;
+}
+
+ion-list {
+  background: transparent;
+  gap: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+ion-item {
+  --background: #FFFFFF;
+  --padding-start: 12px;
+  --padding-end: 0px; 
+  --inner-padding-end: 0px; 
+  --min-height: 48px;
+  border-radius: 10px;
+  --border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label-flex {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: auto;
+  flex: 1;
+  font-size: 13px;
+
+  span {
+    font-size: 10px;
+    color: #8E8E93;
+    margin-left: 8px;
+  }
+}
+
+.select-right {
+  min-width: 70px;
+  max-width: 80px;
+  flex-shrink: 0;
+  margin-left: auto;
+  text-align: right;
+  --padding-start: 0px;
+  --padding-end: 0px;
+  margin-top: 0; 
+  margin-bottom: 0; 
+}
+
+.select-right::part(container) {
+  background-color: #F8D8D8; 
+  border: 1px solid #9B2E2E; 
+  border-radius: 6px; 
+  padding: 6px 10px; 
+  text-align: center; 
+}
+
+.select-right::part(native) {
+  color: #9B2E2E;
+  font-weight: bold; 
+  padding: 0; 
+}
+
+.select-right::part(icon) {
+  display: none;
+}
+
+.ringkasan {
+  background: #FFFFFF;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.ringkasan-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #E5E5EA;
+}
+
+.ringkasan-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.waktu-value {
+  color: #9B2E2E;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+ion-button {
+  --border-radius: 8px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  height: 42px;
+  font-size: 13px;
+  --box-shadow: none;
+}

@@ -6,6 +6,7 @@ import { Menu } from '../models/menu.model';
 import { MenuFormPage } from '../menu-form/menu-form.page';
 import { AlertController } from '@ionic/angular';
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -136,6 +137,13 @@ export class HomePage implements OnInit {
       this.generateWeekDays();
       this.generateWeekDaysShort();
     }
+  }
+
+  goToSettings() {
+    console.log('navigating to settings...');
+    this.router.navigate(['/settings']).then(result => {
+      console.log('navigation result:', result);
+    });
   }
 
   goToToday() {
