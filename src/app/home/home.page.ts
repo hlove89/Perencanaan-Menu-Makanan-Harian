@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform, ToastController } from '@ionic/angular';
 import { MenuService } from '../services/menu';
 import { Menu } from '../models/menu.model';
 import { MenuFormPage } from '../menu-form/menu-form.page';
 import { AlertController } from '@ionic/angular';
-
+import { App } from '@capacitor/app'; 
 
 @Component({
   selector: 'app-home',
@@ -26,17 +26,24 @@ export class HomePage implements OnInit {
   selectedDayIndex: number = 0;
   selectedDate: Date = new Date();
   
+  formattedSelectedDate: string = '';
+
   showMonthPicker: boolean = false;
   months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
   years: number[] = [];
 
   showPopup: boolean = false;
 
+  private lastBackPress = 0;
+  private timePeriodToExit = 2000; 
+
   constructor(
     private router: Router,
     private menuService: MenuService,
     private modalCtrl: ModalController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private platform: Platform,         
+    private toastCtrl: ToastController   
   ) {
     const currentYear = new Date().getFullYear();
     for (let i = currentYear - 5; i <= currentYear + 5; i++) {
@@ -56,6 +63,31 @@ export class HomePage implements OnInit {
     }
   }
 
+  ionViewDidEnter() {
+    this.refreshMenus();
+    
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      const currentTime = new Date().getTime();
+      
+      if (currentTime - this.lastBackPress < this.timePeriodToExit) {
+        App.exitApp(); 
+      } else {
+        this.tampilkanToastKonfirmasi();
+        this.lastBackPress = currentTime; 
+      }
+    });
+  }
+
+  async tampilkanToastKonfirmasi() {
+    const toast = await this.toastCtrl.create({
+      message: 'Ketuk sekali lagi untuk keluar',
+      duration: 2000,
+      position: 'bottom',
+      color: 'dark'
+    });
+    await toast.present();
+  }
+
   hidePopup() {
     this.showPopup = false;
   }
@@ -68,6 +100,12 @@ export class HomePage implements OnInit {
     this.generateWeekDaysShort();
   }
 
+  refreshMenus() {
+    this.updateFormattedDate(); 
+    this.generateWeekDays();
+    this.generateWeekDaysShort();
+  }
+
   updateDisplay() {
     const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
                         'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -75,6 +113,14 @@ export class HomePage implements OnInit {
     this.currentYear = this.currentDate.getFullYear();
     this.currentMonthIndex = this.currentDate.getMonth();
     this.currentDay = this.currentDate.getDate();
+    this.updateFormattedDate(); 
+  }
+
+  updateFormattedDate() {
+    const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    this.formattedSelectedDate = `${dayNames[this.selectedDate.getDay()]}, ${this.selectedDate.getDate()} ${monthNames[this.selectedDate.getMonth()]} ${this.selectedDate.getFullYear()}`;
   }
 
   generateWeekDays() {
@@ -140,10 +186,7 @@ export class HomePage implements OnInit {
   }
 
   goToSettings() {
-    console.log('navigating to settings...');
-    this.router.navigate(['/settings']).then(result => {
-      console.log('navigation result:', result);
-    });
+    this.router.navigate(['/settings']);
   }
 
   goToToday() {
@@ -236,27 +279,23 @@ export class HomePage implements OnInit {
   }
 
   getFormattedDate(): string {
-    const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    return `${dayNames[this.selectedDate.getDay()]}, ${this.selectedDate.getDate()} ${monthNames[this.selectedDate.getMonth()]} ${this.selectedDate.getFullYear()}`;
+    return this.formattedSelectedDate;
   }
 
   getMenusByKategori(kategori: string): Menu[] {
     const allMenus = this.menuService.getMenus();
-    const selectedHari = this.getFormattedDate();
-    return allMenus.filter(m => m.kategori === kategori && m.hari === selectedHari);
+    return allMenus.filter(m => m.kategori === kategori && m.hari === this.formattedSelectedDate);
   }
 
   async tambahMenu(kategori: string) {
     const modal = await this.modalCtrl.create({
       component: MenuFormPage,
       componentProps: { 
-        hari: this.getFormattedDate(),
+        hari: this.formattedSelectedDate,
         kategori: kategori
       }
     });
-    modal.onDidDismiss().then(() => this.loadCurrentDate());
+    modal.onDidDismiss().then(() => this.refreshMenus());
     await modal.present();
   }
 
@@ -275,15 +314,15 @@ export class HomePage implements OnInit {
       }
     });
     await modal.present();
-    modal.onDidDismiss().then(() => this.loadCurrentDate());
+    modal.onDidDismiss().then(() => this.refreshMenus());
   }
 
   async lihatDetailMenu(menu: Menu) {
     const alert = await this.alertCtrl.create({
       header: menu.nama,
       subHeader: menu.kategori === 'Breakfast' ? '🍳 Sarapan' :
-                  menu.kategori === 'Lunch' ? '🍲 Makan Siang' :
-                  menu.kategori === 'Dinner' ? '🍽️ Makan Malam' : '🍪 Cemilan',
+                 menu.kategori === 'Lunch' ? '🍲 Makan Siang' :
+                 menu.kategori === 'Dinner' ? '🍽️ Makan Malam' : '🍪 Cemilan',
       message: `
         📅 ${menu.hari}
         📝 Catatan: ${menu.catatan || 'Tidak ada catatan'}
@@ -296,7 +335,7 @@ export class HomePage implements OnInit {
 
   toggleMasak(id: string) {
     this.menuService.toggleSudahDimasak(id);
-    this.loadCurrentDate();
+    this.refreshMenus();
   }
 
   goToHome() {

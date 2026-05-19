@@ -1,27 +1,30 @@
 <ion-app>
 
-  <!-- Custom Splash Full Screen -->
   <div class="custom-splash" *ngIf="showCustomSplash">
     <img src="assets/resources/splash.png" alt="Splash Screen" />
   </div>
 
   <ion-router-outlet id="main-content"></ion-router-outlet>
   
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="home" routerLink="/home" routerLinkActive="tab-active" routerDirection="root">
-      <ion-icon name="home-outline"></ion-icon>
-      <ion-label>Beranda</ion-label>
-    </ion-tab-button>
+  <ion-footer style="box-shadow: 0 -2px 10px rgba(0,0,0,0.05); background: #ffffff;">
+    <ion-tab-bar slot="bottom" style="--border: none; height: 65px; background: #ffffff;">
+      
+      <ion-tab-button tab="home" routerLink="/home" routerLinkActive="tab-active" routerDirection="root">
+        <ion-icon name="home-outline"></ion-icon>
+        <ion-label>Beranda</ion-label>
+      </ion-tab-button>
 
-    <ion-tab-button tab="daftar-menu" routerLink="/daftar-menu" routerLinkActive="tab-active" routerDirection="root">
-      <ion-icon name="list-outline"></ion-icon>
-      <ion-label>Menu</ion-label>
-    </ion-tab-button>
+      <ion-tab-button tab="daftar-menu" routerLink="/daftar-menu" routerLinkActive="tab-active" routerDirection="root">
+        <ion-icon name="list-outline"></ion-icon>
+        <ion-label>Menu</ion-label>
+      </ion-tab-button>
 
-    <ion-tab-button tab="settings" routerLink="/settings" routerLinkActive="tab-active" routerDirection="root">
-      <ion-icon name="settings-outline"></ion-icon>
-      <ion-label>Pengaturan</ion-label>
-    </ion-tab-button>
-  </ion-tab-bar>
+      <ion-tab-button tab="settings" routerLink="/settings" routerLinkActive="tab-active" routerDirection="root">
+        <ion-icon name="settings-outline"></ion-icon>
+        <ion-label>Pengaturan</ion-label>
+      </ion-tab-button>
+      
+    </ion-tab-bar>
+  </ion-footer>
 
 </ion-app>

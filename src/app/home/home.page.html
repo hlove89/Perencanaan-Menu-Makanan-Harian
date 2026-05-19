@@ -172,24 +172,3 @@
     </div>
   </div>
 </ion-content>
-
-<ion-tab-bar slot="bottom">
-  <ion-tab-button tab="home" routerLink="/home" routerLinkActive="tab-active" routerDirection="root">
-    <ion-icon name="home-outline"></ion-icon>
-    <ion-label>Beranda</ion-label>
-  </ion-tab-button>
-
-  <ion-tab-button class="center-button" (click)="tambahMenuCepat()">
-    <ion-icon name="add-circle" class="center-icon"></ion-icon>
-  </ion-tab-button>
-
-  <ion-tab-button tab="daftar-menu" routerLink="/daftar-menu" routerLinkActive="tab-active" routerDirection="root">
-    <ion-icon name="list-outline"></ion-icon>
-    <ion-label>Menu</ion-label>
-  </ion-tab-button>
-
-  <ion-tab-button tab="settings" (click)="goToSettings()">
-    <ion-icon name="settings-outline"></ion-icon>
-    <ion-label>Pengaturan</ion-label>
-  </ion-tab-button>
-</ion-tab-bar>
